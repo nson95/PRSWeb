@@ -2,6 +2,7 @@ package com.prs;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,14 +13,21 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int ID;
+	@Column(name = "Username")
 	private String userName;
+	@Column(name = "Password")
 	private String password;
+	@Column(name = "FirstName")
 	private String firstName;
+	@Column(name = "LastName")
 	private String lastName;
+	@Column(name = "PhoneNumber")
 	private String phoneNumber;
+	@Column(name = "Email")
 	private String email;
 	private boolean isReviewer;
 	private boolean isAdmin;
+	@Column(name = "DateCreated")
 	LocalDateTime dateCreated;
 	
 	public User(int iD, String userName, String password, String firstName, String lastName, String phoneNumber,
