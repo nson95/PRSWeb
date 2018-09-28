@@ -25,7 +25,9 @@ public class User {
 	private String phoneNumber;
 	@Column(name = "Email")
 	private String email;
+	@Column(name = "IsReviewer")
 	private boolean isReviewer;
+	@Column(name = "IsAdmin")
 	private boolean isAdmin;
 	@Column(name = "DateCreated")
 	LocalDateTime dateCreated;
