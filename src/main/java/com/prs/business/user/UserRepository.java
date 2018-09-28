@@ -1,8 +1,6 @@
-package com.prs;
+package com.prs.business.user;
 
 import org.springframework.data.repository.CrudRepository;
-
-import com.prs.User;
 
 	// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 	// CRUD refers Create, Read, Update, Delete

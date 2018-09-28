@@ -1,6 +1,7 @@
-package com.prs;
+package com.prs.business.vendor;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,24 +12,25 @@ public class Vendor {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "ID")
 	private int id;
-
+	@Column(name = "Code")
 	private String code;
-
+	@Column(name = "Name")
 	private String name;
-
+	@Column(name = "Address")
 	private String address;
-
+	@Column(name = "City")
 	private String city;
-
+	@Column(name = "State")
 	private String state;
-
+	@Column(name = "Zip")
 	private String zip;
-
+	@Column(name = "PhoneNumber")
 	private String phoneNumber;
-
+	@Column(name = "Email")
 	private String email;
-
+	@Column(name = "IsPreApproved")
 	private boolean isPreapproved;
 
 	

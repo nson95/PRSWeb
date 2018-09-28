@@ -1,8 +1,6 @@
-package com.prs;
+package com.prs.business.user;
 
-import java.time.LocalDateTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,27 +11,18 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int ID;
-	@Column(name = "Username")
 	private String userName;
-	@Column(name = "Password")
 	private String password;
-	@Column(name = "FirstName")
 	private String firstName;
-	@Column(name = "LastName")
 	private String lastName;
-	@Column(name = "PhoneNumber")
 	private String phoneNumber;
-	@Column(name = "Email")
 	private String email;
-	@Column(name = "IsReviewer")
 	private boolean isReviewer;
-	@Column(name = "IsAdmin")
 	private boolean isAdmin;
-	@Column(name = "DateCreated")
-	LocalDateTime dateCreated;
+	
 	
 	public User(int iD, String userName, String password, String firstName, String lastName, String phoneNumber,
-			String email, boolean isReviewer, boolean isAdmin, LocalDateTime dateCreated) {
+			String email, boolean isReviewer, boolean isAdmin) {
 		super();
 		ID = iD;
 		this.userName = userName;
@@ -44,7 +33,6 @@ public class User {
 		this.email = email;
 		this.isAdmin = isAdmin;
 		this.isReviewer = isReviewer;
-		this.dateCreated = dateCreated;
 	}
 
 	public User(String userName, String password, String firstName, String lastName, String phoneNumber,
@@ -133,20 +121,15 @@ public class User {
 		this.isAdmin = admin;
 	}
 
-	public LocalDateTime getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(LocalDateTime dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
 	@Override
 	public String toString() {
 		return "User [ID=" + ID + ", userName=" + userName + ", password=" + password + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + ", isReviewer="
-				+ isReviewer + ", isAdmin=" + isAdmin + ", dateCreated=" + dateCreated + "]";
+				+ isReviewer + ", isAdmin=" + isAdmin + "]";
 	}
+
+	
+	
 	
 	
 	
