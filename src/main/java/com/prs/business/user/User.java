@@ -20,7 +20,6 @@ public class User {
 	private boolean isReviewer;
 	private boolean isAdmin;
 	
-	
 	public User(int iD, String userName, String password, String firstName, String lastName, String phoneNumber,
 			String email, boolean isReviewer, boolean isAdmin) {
 		super();
@@ -45,10 +44,8 @@ public class User {
 		this.email = email;
 	}
 	public User() {
-		
 	}
 	
-
 	public int getID() {
 		return ID;
 	}
@@ -128,10 +125,4 @@ public class User {
 				+ isReviewer + ", isAdmin=" + isAdmin + "]";
 	}
 
-	
-	
-	
-	
-	
-	
 }

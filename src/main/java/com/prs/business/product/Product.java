@@ -40,7 +40,6 @@ public class Product {
 		this.unit = unit;
 	}
 	
-
 	public Product() {
 		super();
 	}
@@ -97,10 +96,6 @@ public class Product {
 		return "Product [ID=" + id + ", vendor=" + vendor + ", partNumber=" + partNumber + ", name=" + name
 				+ ", price=" + price + ", unit=" + unit + "]";
 	}
-	
-	
-	
-	
 	
 
 }
