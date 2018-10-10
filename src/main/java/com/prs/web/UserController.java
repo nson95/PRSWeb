@@ -48,4 +48,10 @@ public class UserController {
 		userRepository.delete(user);
 		return "user deleted";
 	}
+	@PostMapping("/Login")
+	public @ResponseBody User authenticate(@RequestBody User user) {
+		User u = userRepository.findByUserNameAndPassword(user.getUserName(),
+														user.getPassword());
+		return u;
+	}
 }

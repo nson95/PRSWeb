@@ -1,5 +1,7 @@
 package com.prs.web;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +49,30 @@ public class PurchaseRequestController {
 	public @ResponseBody String removePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
 		prRepository.delete(purchaseRequest);
 		return "Request deleted";
+	}
+	@PostMapping(path="/SubmitForReview") 
+	public @ResponseBody PurchaseRequest submitForReview (@RequestBody PurchaseRequest pr) {
+		if (pr.getTotal()<=50)
+			pr.setStatus(PurchaseRequest.STATUS_APPROVED);
+		else
+			pr.setStatus(PurchaseRequest.STATUS_REVIEW);
+		pr.setSubmittedDate(LocalDate.now());
+		return prRepository.save(pr);
+	}
+	@PostMapping(path="/ApprovePR") 
+	public @ResponseBody PurchaseRequest approvePR(@RequestBody PurchaseRequest pr) {
+		pr.setStatus(PurchaseRequest.STATUS_APPROVED);
+		return prRepository.save(pr);
+	}
+	@PostMapping(path="/RejectPR") 
+	public @ResponseBody PurchaseRequest rejectPR (@RequestBody PurchaseRequest pr) {
+		pr.setStatus(PurchaseRequest.STATUS_REJECTED);
+		return prRepository.save(pr);
+	}
+	@GetMapping(path="/Remove") 
+	public @ResponseBody String deletePurchaseRequest(@RequestParam int id) {
+		Optional<PurchaseRequest> pr = prRepository.findById(id);
+		prRepository.delete(pr.get());
+		return "Purchase Request Deleted";
 	}
 }

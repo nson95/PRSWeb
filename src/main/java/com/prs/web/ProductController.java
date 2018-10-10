@@ -31,9 +31,7 @@ public class ProductController {
 	public @ResponseBody Optional<Product> getProduct(@RequestParam int id) { 
 		Optional<Product> product = productRepository.findById(id);
 		return product; 
-		
 	}
-	
 	@PostMapping("/Add") 
 	public @ResponseBody Product addProduct(@RequestBody Product product) { 
 		return productRepository.save(product);

@@ -25,6 +25,11 @@ public class PurchaseRequest {
 	private double total;
 	private LocalDate submittedDate;
 	private String reasonForRejection;
+	public static final String STATUS_NEW = "New";
+	public static final String STATUS_REVIEW = "Review";
+	public static final String STATUS_EDIT = "Edit";
+	public static final String STATUS_APPROVED = "Approved";
+	public static final String STATUS_REJECTED = "Rejected";
 
 	public PurchaseRequest(int id, User user, String description, String justification, LocalDate dateNeeded,
 		String deliveryMode, String status, double total, LocalDate submittedDate, String reasonForRejection) {
