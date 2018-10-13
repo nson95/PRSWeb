@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.prs.business.product.Product;
 import com.prs.business.purchaserequest.PurchaseRequest;
@@ -19,7 +20,7 @@ import com.prs.business.purchaserequest.PurchaseRequestLineItem;
 import com.prs.business.purchaserequest.PurchaseRequestLineItemRepository;
 import com.prs.business.purchaserequest.PurchaseRequestRepository;
 
-
+@CrossOrigin
 @Controller
 @RequestMapping(path="/PurchaseRequestLineItems")
 public class PurchaseRequestLineItemController {
