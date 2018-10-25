@@ -47,7 +47,8 @@ public class UserController {
 	public @ResponseBody JsonResponse saveUser(@RequestBody User user) { 
 		try {
 			userRepository.save(user);
-			return JsonResponse.getInstance(user);
+
+				return JsonResponse.getInstance(user);
 		} catch (DataIntegrityViolationException ex) {
 			return JsonResponse.getErrorInstance(ex.getRootCause().toString(), ex);
 		} catch (Exception ex) {
