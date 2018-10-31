@@ -64,9 +64,13 @@ public class ProductController {
 		return saveProduct(product);
 	}
 	
-	@PostMapping("/Remove")
-	public @ResponseBody String removeProduct(@RequestBody Product product) { 
-		productRepository.delete(product);
-		return product +" deleted";
+	public @ResponseBody JsonResponse removeProduct(@RequestBody Product product) {
+		try {
+			productRepository.delete(product);
+			return JsonResponse.getInstance(product);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance(ex.getMessage(), ex);
+
+		}
 	}
 }

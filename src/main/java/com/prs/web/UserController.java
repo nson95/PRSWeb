@@ -65,10 +65,16 @@ public class UserController {
 		return saveUser(user);
 	}
 	@PostMapping("/Remove")
-	public @ResponseBody String removeUser(@RequestBody User user) { 
-		userRepository.delete(user);
-		return "user deleted";
+	public @ResponseBody JsonResponse removeUser(@RequestBody User user) {
+		try {
+			userRepository.delete(user);
+			return JsonResponse.getInstance(user);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance(ex.getMessage(), ex);
+
+		}
 	}
+	
 	@PostMapping("/Login")
 	public @ResponseBody JsonResponse authenticate(@RequestBody User user) {
 		try {
