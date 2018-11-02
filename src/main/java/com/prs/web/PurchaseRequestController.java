@@ -25,21 +25,20 @@ import com.prs.util.JsonResponse;
 @RequestMapping(path="/PurchaseRequests")
 public class PurchaseRequestController {
 	@Autowired
-	private PurchaseRequestRepository prRepository;
+	private PurchaseRequestRepository purchaseRequestRepository;
 	
 	@GetMapping("/List")
 	public @ResponseBody JsonResponse getAllPurchaseRequests() {
 		try {
-			return JsonResponse.getInstance(prRepository.findAll());
+			return JsonResponse.getInstance(purchaseRequestRepository.findAll());
 		} catch (Exception e) {
 			return JsonResponse.getErrorInstance("User list failure:" + e.getMessage(), e);
-
 		}
 	}
 	@GetMapping("/ListReview")
 	public @ResponseBody JsonResponse getAllPurchaseRequestsForReview(@RequestParam int id) {
 		try {
-			return JsonResponse.getInstance(prRepository.findAllByUserIdNotAndStatus(id, "Review"));
+			return JsonResponse.getInstance(purchaseRequestRepository.findAllByUserIdNotAndStatus(id, "Review"));
 		} catch (Exception e) {
 			return JsonResponse.getErrorInstance("Purchase Request list failure:" + e.getMessage(), e);
 		}
@@ -47,19 +46,18 @@ public class PurchaseRequestController {
 	@GetMapping("/Get/{id}")
 	public @ResponseBody JsonResponse getPurchaseRequest(@PathVariable int id) {
 		try {
-			Optional<PurchaseRequest> purchaseRequest = prRepository.findById(id);
+			Optional<PurchaseRequest> purchaseRequest = purchaseRequestRepository.findById(id);
 			if (purchaseRequest.isPresent())
 				return JsonResponse.getInstance(purchaseRequest.get());
 			else
 				return JsonResponse.getErrorInstance("Purchase Request not found for id: " + id, null);
 		} catch (Exception e) {
 			return JsonResponse.getErrorInstance("Error getting purchase request:  " + e.getMessage(), null);
-
 		}
 	}
 	private @ResponseBody JsonResponse savePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
 		try {
-			prRepository.save(purchaseRequest);
+			purchaseRequestRepository.save(purchaseRequest);
 			return JsonResponse.getInstance(purchaseRequest);
 		} catch (DataIntegrityViolationException ex) {
 			return JsonResponse.getErrorInstance(ex.getRootCause().toString(), ex);
@@ -79,7 +77,7 @@ public class PurchaseRequestController {
 	@PostMapping("/Remove")
 	public @ResponseBody JsonResponse removePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
 		try {
-			prRepository.delete(purchaseRequest);
+			purchaseRequestRepository.delete(purchaseRequest);
 			return JsonResponse.getInstance(purchaseRequest);
 		} catch (Exception ex) {
 			return JsonResponse.getErrorInstance(ex.getMessage(), ex);
@@ -93,7 +91,6 @@ public class PurchaseRequestController {
 			purchaseRequest.setStatus(PurchaseRequest.STATUS_REVIEW);
 		purchaseRequest.setSubmittedDate(LocalDate.now());
 		return savePurchaseRequest(purchaseRequest);
-		
 	}
 	@PostMapping("/ApprovePR") 
 	public @ResponseBody JsonResponse approvePurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
@@ -101,13 +98,8 @@ public class PurchaseRequestController {
 		return savePurchaseRequest(purchaseRequest);
 	}
 	@PostMapping(path="/RejectPR") 
-	public @ResponseBody PurchaseRequest rejectPR (@RequestBody PurchaseRequest pr) {
+	public @ResponseBody JsonResponse rejectPR (@RequestBody PurchaseRequest pr) {
 		pr.setStatus(PurchaseRequest.STATUS_REJECTED);
-		return prRepository.save(pr);
-	}
-	@PostMapping("/RejectPR") 
-	public @ResponseBody JsonResponse rejectPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
-			purchaseRequest.setStatus(PurchaseRequest.STATUS_REJECTED);
-			return savePurchaseRequest(purchaseRequest);
+		return savePurchaseRequest(pr);
 	}
 }
