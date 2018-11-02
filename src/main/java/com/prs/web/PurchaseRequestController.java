@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestRepository;
+import com.prs.util.JsonResponse;
 
 @CrossOrigin
 @Controller
@@ -24,56 +27,87 @@ public class PurchaseRequestController {
 	@Autowired
 	private PurchaseRequestRepository prRepository;
 	
-	@GetMapping(path="/List")
-	public @ResponseBody Iterable<PurchaseRequest> getAllPurchaseRequests() {
-		Iterable<PurchaseRequest> purchaseRequest = prRepository.findAll();
-		return purchaseRequest;
+	@GetMapping("/List")
+	public @ResponseBody JsonResponse getAllPurchaseRequests() {
+		try {
+			return JsonResponse.getInstance(prRepository.findAll());
+		} catch (Exception e) {
+			return JsonResponse.getErrorInstance("User list failure:" + e.getMessage(), e);
+
+		}
 	}
-	@GetMapping("/Get") 
-	public @ResponseBody Optional<PurchaseRequest> getPurchaseRequest(@RequestParam int id) { 
-		Optional<PurchaseRequest> purchaseRequest = prRepository.findById(id);
-		return purchaseRequest; 
-		
+	@GetMapping("/ListReview")
+	public @ResponseBody JsonResponse getAllPurchaseRequestsForReview(@RequestParam int id) {
+		try {
+			return JsonResponse.getInstance(prRepository.findAllByUserIdNotAndStatus(id, "Review"));
+		} catch (Exception e) {
+			return JsonResponse.getErrorInstance("Purchase Request list failure:" + e.getMessage(), e);
+		}
 	}
-	
+	@GetMapping("/Get/{id}")
+	public @ResponseBody JsonResponse getPurchaseRequest(@PathVariable int id) {
+		try {
+			Optional<PurchaseRequest> purchaseRequest = prRepository.findById(id);
+			if (purchaseRequest.isPresent())
+				return JsonResponse.getInstance(purchaseRequest.get());
+			else
+				return JsonResponse.getErrorInstance("Purchase Request not found for id: " + id, null);
+		} catch (Exception e) {
+			return JsonResponse.getErrorInstance("Error getting purchase request:  " + e.getMessage(), null);
+
+		}
+	}
+	private @ResponseBody JsonResponse savePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
+		try {
+			prRepository.save(purchaseRequest);
+			return JsonResponse.getInstance(purchaseRequest);
+		} catch (DataIntegrityViolationException ex) {
+			return JsonResponse.getErrorInstance(ex.getRootCause().toString(), ex);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance(ex.getMessage(), ex);
+		}
+	}
 	@PostMapping("/Add") 
-	public @ResponseBody PurchaseRequest addPurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
-		return prRepository.save(purchaseRequest);
+	public @ResponseBody JsonResponse addPurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
+		return savePurchaseRequest(purchaseRequest);
 	}
 	
 	@PostMapping("/Change")
-	public @ResponseBody PurchaseRequest updatePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
-		return prRepository.save(purchaseRequest);
+	public @ResponseBody JsonResponse updatePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
+		return savePurchaseRequest(purchaseRequest);
 	}
-	
 	@PostMapping("/Remove")
-	public @ResponseBody String removePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) { 
-		prRepository.delete(purchaseRequest);
-		return "Request deleted";
+	public @ResponseBody JsonResponse removePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
+		try {
+			prRepository.delete(purchaseRequest);
+			return JsonResponse.getInstance(purchaseRequest);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance(ex.getMessage(), ex);
+		}
 	}
-	@PostMapping(path="/SubmitForReview") 
-	public @ResponseBody PurchaseRequest submitForReview (@RequestBody PurchaseRequest pr) {
-		if (pr.getTotal()<=50)
-			pr.setStatus(PurchaseRequest.STATUS_APPROVED);
+	@PostMapping("/SubmitForReview")
+	public @ResponseBody JsonResponse submitForReview (@RequestBody PurchaseRequest purchaseRequest) {
+		if (purchaseRequest.getTotal()<=51)
+			purchaseRequest.setStatus(PurchaseRequest.STATUS_APPROVED);
 		else
-			pr.setStatus(PurchaseRequest.STATUS_REVIEW);
-		pr.setSubmittedDate(LocalDate.now());
-		return prRepository.save(pr);
+			purchaseRequest.setStatus(PurchaseRequest.STATUS_REVIEW);
+		purchaseRequest.setSubmittedDate(LocalDate.now());
+		return savePurchaseRequest(purchaseRequest);
+		
 	}
-	@PostMapping(path="/ApprovePR") 
-	public @ResponseBody PurchaseRequest approvePR(@RequestBody PurchaseRequest pr) {
-		pr.setStatus(PurchaseRequest.STATUS_APPROVED);
-		return prRepository.save(pr);
+	@PostMapping("/ApprovePR") 
+	public @ResponseBody JsonResponse approvePurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+		purchaseRequest.setStatus(PurchaseRequest.STATUS_APPROVED);
+		return savePurchaseRequest(purchaseRequest);
 	}
 	@PostMapping(path="/RejectPR") 
 	public @ResponseBody PurchaseRequest rejectPR (@RequestBody PurchaseRequest pr) {
 		pr.setStatus(PurchaseRequest.STATUS_REJECTED);
 		return prRepository.save(pr);
 	}
-	@GetMapping(path="/Remove") 
-	public @ResponseBody String deletePurchaseRequest(@RequestParam int id) {
-		Optional<PurchaseRequest> pr = prRepository.findById(id);
-		prRepository.delete(pr.get());
-		return "Purchase Request Deleted";
+	@PostMapping("/RejectPR") 
+	public @ResponseBody JsonResponse rejectPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+			purchaseRequest.setStatus(PurchaseRequest.STATUS_REJECTED);
+			return savePurchaseRequest(purchaseRequest);
 	}
 }

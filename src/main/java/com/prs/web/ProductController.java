@@ -27,9 +27,12 @@ public class ProductController {
 	private ProductRepository productRepository;
 	
 	@GetMapping(path="/List")
-	public @ResponseBody Iterable<Product> getAllProducts() {
-		Iterable<Product> product = productRepository.findAll();
-		return product;
+	public @ResponseBody JsonResponse getAllProducts() {
+		try {
+			return JsonResponse.getInstance(productRepository.findAll());
+		} catch (Exception e) {
+			return JsonResponse.getErrorInstance("Product list failure:" + e.getMessage(), e);
+		}
 	}
 	@GetMapping("/Get/{id}") 
 	public @ResponseBody JsonResponse getProduct(@PathVariable int id) { 
