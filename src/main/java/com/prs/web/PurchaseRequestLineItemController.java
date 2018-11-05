@@ -38,7 +38,7 @@ public class PurchaseRequestLineItemController {
 			try {
 				return JsonResponse.getInstance(prliRepository.findAll());
 			} catch (Exception e) {
-				return JsonResponse.getErrorInstance("User list failure:" + e.getMessage(), e);
+				return JsonResponse.getErrorInstance("Line Item list failure:" + e.getMessage(), e);
 			}
 		}
 		@GetMapping("/Get/{id}")
@@ -53,6 +53,10 @@ public class PurchaseRequestLineItemController {
 				return JsonResponse.getErrorInstance("Error getting purchase request line item:  " + e.getMessage(), null);
 
 			}
+		}
+		@GetMapping(path="/LinesForPR/{id}")
+		public @ResponseBody Iterable<PurchaseRequestLineItem> getAllLineItemsForPR(@PathVariable int id) {
+			return prliRepository.findAllByPurchaseRequestId(id);
 		}
 		private @ResponseBody JsonResponse savePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {
 			try {
