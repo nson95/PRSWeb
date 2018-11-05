@@ -67,6 +67,7 @@ public class PurchaseRequestLineItemController {
 		@PostMapping("/Add") 
 		public @ResponseBody JsonResponse addPurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) { 
 			try {
+				prliRepository.save(purchaseRequestLineItem);
 				updateRequestTotal(purchaseRequestLineItem);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -76,6 +77,7 @@ public class PurchaseRequestLineItemController {
 		@PostMapping("/Change")
 		public @ResponseBody JsonResponse updatePurchaseRequest(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) { 
 			try {
+				prliRepository.save(purchaseRequestLineItem);
 				updateRequestTotal(purchaseRequestLineItem);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -85,8 +87,19 @@ public class PurchaseRequestLineItemController {
 		@PostMapping("/Remove")
 		public @ResponseBody JsonResponse removePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {
 			try {
+				updateRequestTotal(purchaseRequestLineItem);
 				prliRepository.delete(purchaseRequestLineItem);
 				return JsonResponse.getInstance(purchaseRequestLineItem);
+			} catch (Exception ex) {
+				return JsonResponse.getErrorInstance(ex.getMessage(), ex);
+			}
+		}
+		private @ResponseBody JsonResponse savePurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
+			try {
+				prRepository.save(purchaseRequest);
+				return JsonResponse.getInstance(purchaseRequest);
+			} catch (DataIntegrityViolationException ex) {
+				return JsonResponse.getErrorInstance(ex.getRootCause().toString(), ex);
 			} catch (Exception ex) {
 				return JsonResponse.getErrorInstance(ex.getMessage(), ex);
 			}
@@ -104,7 +117,7 @@ public class PurchaseRequestLineItemController {
 				total += lineTotal;
 			}
 			pr.setTotal(total);
-			prRepository.save(pr);
+			savePurchaseRequest(pr);
 		}
 }
 
