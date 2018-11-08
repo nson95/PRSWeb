@@ -1,6 +1,5 @@
 package com.prs.web;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -35,8 +33,8 @@ public class PurchaseRequestController {
 			return JsonResponse.getErrorInstance("User list failure:" + e.getMessage(), e);
 		}
 	}
-	@GetMapping("/ListReview")
-	public @ResponseBody JsonResponse getAllPurchaseRequestsForReview(@RequestParam int id) {
+	@GetMapping("/ListReview/{id}")
+	public @ResponseBody JsonResponse getAllPurchaseRequestsForReview(@PathVariable int id) {
 		try {
 			return JsonResponse.getInstance(purchaseRequestRepository.findAllByUserIdNotAndStatus(id, "Review"));
 		} catch (Exception e) {
