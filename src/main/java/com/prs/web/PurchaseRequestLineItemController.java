@@ -96,7 +96,7 @@ public class PurchaseRequestLineItemController {
 		public @ResponseBody JsonResponse removePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {
 			try {
 				prliRepository.delete(purchaseRequestLineItem);
-				updateRequestTotalForDelete(purchaseRequestLineItem);
+				updateRequestTotal(purchaseRequestLineItem);
 				return JsonResponse.getInstance(purchaseRequestLineItem);
 			} catch (Exception ex) {
 				return JsonResponse.getErrorInstance(ex.getMessage(), ex);
@@ -125,22 +125,6 @@ public class PurchaseRequestLineItemController {
 				total += lineTotal;
 			}
 			pr.setTotal(total);
-			savePurchaseRequest(pr);
-		}
-		private void updateRequestTotalForDelete(PurchaseRequestLineItem prli) throws Exception {
-			Optional<PurchaseRequest> purReq = prRepository.findById(prli.getPurchaseRequest().getId());
-			
-			PurchaseRequest pr = purReq.get();
-			List<PurchaseRequestLineItem> lines = new ArrayList<>();
-			lines = prliRepository.findAllByPurchaseRequestId(pr.getId());
-			double thisLine = prli.getQuantity()*prli.getProduct().getPrice();
-			double total = 0;
-			for (PurchaseRequestLineItem line: lines) {
-				Product p = line.getProduct();
-				double lineTotal = line.getQuantity()*p.getPrice();
-				total += lineTotal;
-			}
-			pr.setTotal(total-thisLine);
 			savePurchaseRequest(pr);
 		}
 }
