@@ -1,12 +1,15 @@
 package com.prs.business.purchaserequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.prs.business.user.User;
 @Entity
@@ -19,11 +22,12 @@ public class PurchaseRequest {
 	private User user;
 	private String description;
 	private String justification;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate dateNeeded;
 	private String deliveryMode;
 	private String status;
 	private double total;
-	private LocalDate submittedDate;
+	private LocalDateTime submittedDate;
 	private String reasonForRejection;
 	public static final String STATUS_NEW = "New";
 	public static final String STATUS_REVIEW = "Review";
@@ -32,7 +36,7 @@ public class PurchaseRequest {
 	public static final String STATUS_REJECTED = "Rejected";
 
 	public PurchaseRequest(int id, User user, String description, String justification, LocalDate dateNeeded,
-		String deliveryMode, String status, double total, LocalDate submittedDate, String reasonForRejection) {
+		String deliveryMode, String status, double total, LocalDateTime submittedDate, String reasonForRejection) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -53,7 +57,7 @@ public class PurchaseRequest {
 		deliveryMode="";
 		status="New";
 		total=0;
-		submittedDate=LocalDate.now();
+		submittedDate=LocalDateTime.now();
 		reasonForRejection="";
 	}
 
@@ -119,11 +123,11 @@ public class PurchaseRequest {
 		this.total = total;
 	}
 
-	public LocalDate getSubmittedDate() {
+	public LocalDateTime getSubmittedDate() {
 		return submittedDate;
 	}
 
-	public void setSubmittedDate(LocalDate submittedDate) {
+	public void setSubmittedDate(LocalDateTime submittedDate) {
 		this.submittedDate = submittedDate;
 	}
 

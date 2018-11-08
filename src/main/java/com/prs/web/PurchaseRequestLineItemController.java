@@ -25,7 +25,7 @@ import com.prs.util.JsonResponse;
 
 @CrossOrigin
 @Controller
-@RequestMapping(path="/PurchaseRequestLineItems")
+@RequestMapping(path="/LineItems")
 public class PurchaseRequestLineItemController {
 
 		@Autowired
@@ -54,9 +54,13 @@ public class PurchaseRequestLineItemController {
 
 			}
 		}
-		@GetMapping(path="/LinesForPR/{id}")
-		public @ResponseBody Iterable<PurchaseRequestLineItem> getAllLineItemsForPR(@PathVariable int id) {
-			return prliRepository.findAllByPurchaseRequestId(id);
+		@GetMapping(path="/LinesforPR/{id}")
+		public @ResponseBody JsonResponse getAllLineItemsForPR(@PathVariable int id) {
+			try {
+				return JsonResponse.getInstance(prliRepository.findAllByPurchaseRequestId(id));
+			} catch (Exception e) {
+				return JsonResponse.getErrorInstance("Error getting purchase request line item:  " + e.getMessage(), null);
+			}
 		}
 		private @ResponseBody JsonResponse savePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {
 			try {
@@ -91,8 +95,8 @@ public class PurchaseRequestLineItemController {
 		@PostMapping("/Remove")
 		public @ResponseBody JsonResponse removePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {
 			try {
-				updateRequestTotal(purchaseRequestLineItem);
 				prliRepository.delete(purchaseRequestLineItem);
+				updateRequestTotalForDelete(purchaseRequestLineItem);
 				return JsonResponse.getInstance(purchaseRequestLineItem);
 			} catch (Exception ex) {
 				return JsonResponse.getErrorInstance(ex.getMessage(), ex);
@@ -121,6 +125,22 @@ public class PurchaseRequestLineItemController {
 				total += lineTotal;
 			}
 			pr.setTotal(total);
+			savePurchaseRequest(pr);
+		}
+		private void updateRequestTotalForDelete(PurchaseRequestLineItem prli) throws Exception {
+			Optional<PurchaseRequest> purReq = prRepository.findById(prli.getPurchaseRequest().getId());
+			
+			PurchaseRequest pr = purReq.get();
+			List<PurchaseRequestLineItem> lines = new ArrayList<>();
+			lines = prliRepository.findAllByPurchaseRequestId(pr.getId());
+			double thisLine = prli.getQuantity()*prli.getProduct().getPrice();
+			double total = 0;
+			for (PurchaseRequestLineItem line: lines) {
+				Product p = line.getProduct();
+				double lineTotal = line.getQuantity()*p.getPrice();
+				total += lineTotal;
+			}
+			pr.setTotal(total-thisLine);
 			savePurchaseRequest(pr);
 		}
 }

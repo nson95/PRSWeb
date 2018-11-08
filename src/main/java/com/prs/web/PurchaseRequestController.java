@@ -89,7 +89,7 @@ public class PurchaseRequestController {
 			purchaseRequest.setStatus(PurchaseRequest.STATUS_APPROVED);
 		else
 			purchaseRequest.setStatus(PurchaseRequest.STATUS_REVIEW);
-		purchaseRequest.setSubmittedDate(LocalDate.now());
+		purchaseRequest.setSubmittedDate(LocalDateTime.now());
 		return savePurchaseRequest(purchaseRequest);
 	}
 	@PostMapping("/ApprovePR") 
