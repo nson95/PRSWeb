@@ -83,7 +83,7 @@ public class PurchaseRequestLineItemController {
 			return savePurchaseRequestLineItem(purchaseRequestLineItem);
 		}
 		@PostMapping("/Change")
-		public @ResponseBody JsonResponse updatePurchaseRequest(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) { 
+		public @ResponseBody JsonResponse updatePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) { 
 			try {
 				prliRepository.save(purchaseRequestLineItem);
 				updateRequestTotal(purchaseRequestLineItem);
